@@ -20,7 +20,7 @@ function populateDB() {
       password: "AStrongPwd@2024",
     });
     await user2.save();
-    const mockData = await readFile(join(__dirname, "mock_notes.json"));
+    const mockData = await readFile(join(__dirname, "data", "notes.json"));
     let notes = JSON.parse(mockData).map((note) => {
       return { userId: user1.id, ...note };
     });

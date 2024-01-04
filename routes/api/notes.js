@@ -9,7 +9,7 @@ const {
 const { authenticateUser } = require("../../middleware/authMiddleware");
 const router = require("express").Router();
 
-// Auth middleware
+// Authentication middleware
 router.use(authenticateUser);
 
 router.get("/", getAllNotes);

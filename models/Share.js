@@ -13,6 +13,7 @@ const shareModel = new Schema({
   },
 });
 
+// Combination of two fields should be unique
 shareModel.index({ userId: 1, noteId: 1 }, { unique: true });
 const Share = model("share", shareModel);
 

@@ -19,7 +19,6 @@ app.use("/api/notes", notesRouter);
 app.use("/api/search", searchRouter);
 
 app.use((err, req, res, next) => {
-  console.error(err);
   return res.status(err.status || 500).json({ error: err.message });
 });
 

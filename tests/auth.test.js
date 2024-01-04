@@ -43,6 +43,14 @@ describe("POST /api/auth/signup", () => {
     });
     expect(res.statusCode).toBe(400);
   });
+  it("should successfully create a new user", async () => {
+    const res = await request(app).post("/api/auth/signup").send({
+      username: "newUser",
+      email: "test@example.com",
+      password: "AStrongPwd@2024",
+    });
+    expect(res.statusCode).toBe(200);
+  });
 });
 
 describe("POST /api/auth/login", () => {
@@ -52,13 +60,13 @@ describe("POST /api/auth/login", () => {
       .send({ username: "test" });
     expect(res.statusCode).toBe(500);
   });
-  it("should return unknown user", async () => {
+  it("should return user not found", async () => {
     const res = await request(app)
       .post("/api/auth/login")
       .send({ username: "testUser", password: "AStrongPwd@2024" });
     expect(res.statusCode).toBe(404);
   });
-  it("should perform password validation successfully", async () => {
+  it("should return invalid password for the user", async () => {
     const res = await request(app).post("/api/auth/login").send({
       username: "user1",
       password: "weakPwd",

@@ -17,9 +17,9 @@ module.exports.getNoteById = async (req, res, next) => {
     const { id } = req.params;
     const note = await Note.findById(id);
     if (note.userId != req.userId) {
-      // Check if shared
+      // Check if shared with user
       const record = await Share.findOne({ userId: req.userId, noteId: id });
-      if (!record) throw new ServerError(400, "Note not available");
+      if (!record) throw new ServerError(400, "Not authorized to view note");
     }
     return res.json({ note });
   } catch (error) {
@@ -47,7 +47,11 @@ module.exports.updateNote = async (req, res, next) => {
       { _id: id, userId: req.userId },
       { title, description }
     );
-    if (!note) throw new ServerError(400, "Operation not allowed");
+    if (!note)
+      throw new ServerError(
+        400,
+        "This note does not exist or you are not authorized to modify it"
+      );
     return res.json({ note });
   } catch (error) {
     next(error);
@@ -58,8 +62,12 @@ module.exports.deleteNote = async (req, res, next) => {
   try {
     const { id } = req.params;
     const note = await Note.findOneAndDelete({ _id: id, userId: req.userId });
+    if (!note)
+      throw new ServerError(
+        400,
+        "This note does not exist or you are not authorized to modify it"
+      );
     await Share.deleteMany({ noteId: id });
-    if (!note) throw new ServerError(400, "Operation not allowed");
     return res.json({ message: `Note ${id} deleted successfully` });
   } catch (error) {
     next(error);
@@ -71,7 +79,7 @@ module.exports.shareNote = async (req, res, next) => {
     const { id } = req.params;
     const { username } = req.body;
     const user = await User.findOne({ username });
-    if (!user) throw new ServerError(404, "User not found");
+    if (!user) throw new ServerError(404, `Username ${username} not found`);
     const record = new Share({ userId: user.id, noteId: id });
     await record.save();
     return res.json({ message: `Shared with ${username} successfully: ${id}` });

@@ -18,6 +18,7 @@ const noteModel = new Schema({
   },
 });
 
+// Index fields for faster text searches
 noteModel.index({ title: "text", description: "text" });
 const Note = model("note", noteModel);
 

@@ -26,6 +26,7 @@ describe("GET /api/notes/", () => {
       .get("/api/notes")
       .set("access_token", user1AccessToken);
     expect(res.statusCode).toBe(200);
+    expect(res.body.notes.length).toBe(100);
   });
   it("Get all notes for an unauthenticated user", async () => {
     const res = await request(app).get("/api/notes");

@@ -10,7 +10,7 @@ To run tests, run the following command
 ```bash
   npm run test
 ```
-What this does is injects data into the Testing DB and cleans up everything post successful completion
+What this does is cleans up and injects data into the Testing DB
 
 ## Run Locally
 

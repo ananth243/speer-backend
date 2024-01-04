@@ -20,10 +20,15 @@ afterAll(async () => {
 
 describe("GET /api/search", () => {
   it("Gets all records for a query", async () => {
-    const res = await request(app)
+    let res = await request(app)
       .get(`/api/search?q=Chennai`)
       .set("access_token", userAccessToken);
     expect(res.statusCode).toBe(200);
     expect(res.body.notes.length).toBe(1)
+    res = await request(app)
+      .get(`/api/search?q=tempor`)
+      .set("access_token", userAccessToken);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.notes.length).toBe(6)
   });
 });

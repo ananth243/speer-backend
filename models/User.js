@@ -27,6 +27,7 @@ const userModel = new Schema({
   },
 });
 
+// Hash password before saving in DB
 userModel.pre("save", async function hash (next){
   this.password = await hashPWD(this.password);
   next();

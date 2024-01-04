@@ -6,7 +6,7 @@
   "scripts": {
     "populate": "run-func util/db.js populateDB",
     "tear": "run-func util/db.js tearDownDB",
-    "test": "npm run populate && cross-env NODE_ENV=test jest --coverage && npm run tear",
+    "test": "npm run tear && npm run populate && cross-env NODE_ENV=test jest --coverage",
     "dev": "nodemon server",
     "start": "node server.js"
   },
