@@ -5,6 +5,6 @@ const router = require("express").Router();
 // Auth middleware
 router.use(authenticateUser);
 
-router.post("/", searchNotes);
+router.get("/", searchNotes);
 
 module.exports = router;

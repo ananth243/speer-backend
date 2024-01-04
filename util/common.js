@@ -9,12 +9,8 @@ module.exports.createAccessToken = async (username, userId) => {
   return sign({ username, userId }, process.env.SECRET_KEY);
 };
 
-module.exports.decodeAccessToken = async (accessToken) => {
-  return decode(accessToken);
-};
-
 module.exports.hashPWD = async (password) => {
-  return hash(password, 3);
+  return hash(password, 10);
 };
 
 module.exports.comparePWD = async (password, dbPassword) => {

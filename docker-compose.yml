@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  mongo_db:
+    container_name: db_container
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - 27017:27017
+  api:
+    build: .
+    ports:
+      - 8080:8080
+    environment:
+      PORT: 8080
+      DBURI: mongodb://mongo_db:27017/speer
+      SECRET_KEY: BTYF36dfcr
+      TEST_DBURI: mongodb://mongo_db:27017/test
+    depends_on: 
+      - mongo_db
+
+volumes:
+  mongo_data: {}

@@ -33,9 +33,7 @@ module.exports.createNote = async (req, res, next) => {
     const userId = req.userId;
     const note = new Note({ title, description, userId });
     await note.save();
-    return res.json({
-      message: `Note ${note.id} created successfully`,
-    });
+    return res.json({ note });
   } catch (error) {
     next(error);
   }
@@ -45,10 +43,12 @@ module.exports.updateNote = async (req, res, next) => {
   try {
     const { title, description } = req.body;
     const { id } = req.params;
-    const note = await Note.findOneAndUpdate({_id: id, userId: req.userId}, {title, description})
-    if (!note)
-      throw new ServerError(400, "Operation not allowed");
-    return res.json({ message: `Note ${id} updated successfully` });
+    const note = await Note.findOneAndUpdate(
+      { _id: id, userId: req.userId },
+      { title, description }
+    );
+    if (!note) throw new ServerError(400, "Operation not allowed");
+    return res.json({ note });
   } catch (error) {
     next(error);
   }
@@ -57,10 +57,9 @@ module.exports.updateNote = async (req, res, next) => {
 module.exports.deleteNote = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const note = await Note.findOneAndDelete({_id: id, userId: req.userId})
-    console.log(note)
-    if (!note)
-      throw new ServerError(400, "Operation not allowed");
+    const note = await Note.findOneAndDelete({ _id: id, userId: req.userId });
+    await Share.deleteMany({ noteId: id });
+    if (!note) throw new ServerError(400, "Operation not allowed");
     return res.json({ message: `Note ${id} deleted successfully` });
   } catch (error) {
     next(error);
@@ -68,11 +67,15 @@ module.exports.deleteNote = async (req, res, next) => {
 };
 
 module.exports.shareNote = async (req, res, next) => {
-  const { id } = req.params;
-  const { username } = req.body;
-  const user = await User.findOne({ username });
-  if(!user) throw new ServerError(404, "User not found")
-  const record = new Share({ userId: user.id, noteId: id });
-  await record.save();
-  return res.json({ message: `Shared with ${username} successfully: ${id}` });
+  try {
+    const { id } = req.params;
+    const { username } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) throw new ServerError(404, "User not found");
+    const record = new Share({ userId: user.id, noteId: id });
+    await record.save();
+    return res.json({ message: `Shared with ${username} successfully: ${id}` });
+  } catch (error) {
+    next(error);
+  }
 };
